@@ -1,24 +1,24 @@
 registerPlugin({
-    name: 'azm Support bot',
-    version: '1.1',
+    name: 'AZM Support Bot',
+    version: '1.2',
     description: 'Nothing to see here go away',
     author: 'Alezm <https://github.com/alezm00>',
     vars: [{
         name:'azm_welcome',
-        title:'Benvenuto configura il support'
+        title:'AZM Support Bot configuration'
     },{
         name:'azm_canale',
-        title:'Seleziona il canale di supporto',
+        title:'Select your waiting for support channel',
         indent : 1,
         type: 'channel'
     },{
         name:'azm_avviso',
-        title: 'Inserisci il messaggio di avviso al player (&u = client name)',
+        title: 'Message recivied by the user to notify him to answer the question in private chat (&u = client name)',
         indent:1,
         type:'string'
     },{
         name:'azm_premessage',
-        title: 'Inserisci il messaggio iniziale da inviare prima delle opzioni',
+        title: 'First message to send before options (&u = client name)',
         indent:1,
         type:'string'
     },{
@@ -27,39 +27,41 @@ registerPlugin({
         indent:1,
         type:'string'
     },{
+        name: 'azm_enablevoicemessage',
+        title: 'TTS the previous message (require the bot to be in the waiting for support channel and TTS)',
+        type: 'select',
+        options: ['Yes', 'No']
+    },{
         name:'azm_supporterMessage',
-        title: 'Inserisci il messaggio da inviare agli admin che ricevono il poke di avviso (&i = id messaggio)',
+        title: 'This is the message recivied by the supporters for a request (&i = message id || &u = username )',
         indent:1,
         type:'string'
     },{
         name: 'azm_messages',
         indent : 2,
-        title: 'Opzioni messaggi:',
+        title: 'Option list:',
         type: 'array',
         vars: [{
             name: 'azm_message_id',
             indent: 1,
-            title: 'seleziona il numero del messaggio',
+            title: 'Set the message ID',
             type: 'number'
         },{
             name: 'azm_message',
             indent: 1,
-            title: 'seleziona il messaggio scrivi &u per il nome del player',
+            title: 'Describe the current id message',
             type: 'string' 
         },{
             name: 'azm_groups',
             indent: 1,
-            title: 'seleziona i gruppi che devono ricevere questa richiesta',
+            title: 'Supporter groups for this request',
             type: 'strings'
         }]
     },{
         name: 'azm_nosupporters',
         indent:1,
-        title:'Inserisci il messaggio da inviare se non ci sono supporter online',
+        title:'Message sent to users if there are not online supporters',
         type:'string'
-    },{
-        name: 'xxxxxxxxxx',
-        title: '------------------------------------------------------------------------------------------------------------------------'
     }]
 }, function(_, config, meta) {
     var event = require('event');
@@ -69,7 +71,7 @@ registerPlugin({
     event.on("load",() => {
         let commandCreator = require("command");
         if (!commandCreator) {
-            engine.log("Devi avere installato command.js");
+            engine.log("u need to intall command.js");
             return;
         }
     })
@@ -108,7 +110,7 @@ registerPlugin({
         //engine.log("azm_channelmove" + ev.client.name() + "    [" + ev.toChannel.id() + " --- " + config.azm_canale+"]");
         if (ev.toChannel.id() == config.azm_canale) {
             ev.client.poke(config.azm_avviso.replace("&u", ev.client.name()))
-            sendMessage(ev.client,config.azm_premessage)
+            sendMessage(ev.client,config.azm_premessage.replace("&u", ev.client.name()))
             config.azm_messages.forEach(mess => {
                 sendMessage(ev.client,("[B]" + mess.azm_message_id + "[/B]" + " >> " + mess.azm_message))
             });
