@@ -2,7 +2,7 @@ registerPlugin({
     name: 'azm Support bot',
     version: '1.1',
     description: 'Nothing to see here go away',
-    author: 'Alezm',
+    author: 'Alezm <https://github.com/alezm00>',
     vars: [{
         name:'azm_welcome',
         title:'Benvenuto configura il support'
