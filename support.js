@@ -23,17 +23,17 @@ registerPlugin({
         type:'string'
     },{
         name:'azm_postmessage',
-        title: 'Inserisci il messaggio da inviare dopo la scelta (&u = client name)',
+        title: 'Enter the message to send after the choice (&u = client name)',
         indent:1,
         type:'string'
     },{
         name: 'azm_enablevoicemessage',
-        title: 'TTS the previous message (require the bot to be in the waiting for support channel and TTS)',
+        title: 'TTS the previous message (requires the bot to be in the waiting for support channel and TTS)',
         type: 'select',
         options: ['Yes', 'No']
     },{
         name:'azm_supporterMessage',
-        title: 'This is the message recivied by the supporters for a request (&i = message id || &u = username )',
+        title: 'This is the message received by the supporters for a request (&i = message id || &u = username )',
         indent:1,
         type:'string'
     },{
@@ -71,7 +71,7 @@ registerPlugin({
     event.on("load",() => {
         let commandCreator = require("command");
         if (!commandCreator) {
-            engine.log("u need to intall command.js");
+            engine.log("[ERROR: Please install command.js to use this script]");
             return;
         }
     })
@@ -88,7 +88,9 @@ registerPlugin({
                 if (ev.text == mess.azm_message_id) {
                     if (azm_antispam.indexOf(ev.client.id()) == -1) {
                         sendMessage(ev.client,(config.azm_postmessage));
-                        audio.say(config.azm_postmessage.replace("&u", ev.client.name()))
+                        if (config.azm_enablevoicemessage == "Yes") {
+                            audio.say(config.azm_postmessage.replace("&u", ev.client.name()))
+                        }
                         callSupport(mess.azm_message_id,mess.azm_groups,ev.client.name());
                         azm_antispam.push(ev.client.id());
                         setTimeout(() => {
